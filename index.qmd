@@ -2,7 +2,7 @@
 title: "STA9750"
 ---
 
-My name is Edgar Rios and.
+My name is Edgar Rios.
 
 ```{r}
 #| echo: false
