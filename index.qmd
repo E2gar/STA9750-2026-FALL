@@ -1,8 +1,13 @@
 ---
-title: "STA9750"
+title: "Edgar Rios"
+toc: false
 ---
 
-My name is Edgar Rios.
+## Welcome!
+
+My name is **Edgar Rios**, and I am a graduate student at **Baruch College**, currently pursuing my master's degree.
+
+Welcome to my STA 9750 website! This site showcases my mini-projects for Software Tools for Data Analysis, where I explore data analysis, visualization, and programming using R.
 
 ```{r}
 #| echo: false
