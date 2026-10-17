@@ -5,7 +5,7 @@ toc: false
 
 ## Welcome!
 
-My name is **Edgar Rios**, and I am a graduate student at **Baruch College**, currently pursuing my master's degree.
+My name is **Edgar Rios**, and I am currently pursuing my Master's degree in Business Analytics at Baruch College.
 
 Welcome to my STA 9750 website! This site showcases my mini-projects for Software Tools for Data Analysis, where I explore data analysis, visualization, and programming using R.
 
