@@ -47,6 +47,7 @@ load_netflix_data <- function(){
   library(scales)
   library(gt)
   
+  
   data_dir <- path("data", "mp01")
     
   if(!dir_exists(data_dir)){
