@@ -467,7 +467,7 @@ In conclusion, I recommend that Netflix prioritize developing globally accessibl
 
 ::: {.callout-note title="AI Usage Statement" collapse="true"}
 
-ChatGPT was used to assist with R code, including table formatting and website design throughout this project. All non-code text was originally written by me. Additionally, ChatGPT was used to provide additional background information on the topic and to brainstorm ideas for the final open-ended prompt.
+ChatGPT was used to assist with R code, including table formatting and website design throughout this project. All non-code text was originally written by me, without the use of any Generative AI tools. Additionally, ChatGPT was used to provide additional background information on the topic and to brainstorm ideas for the final open-ended prompt.
 
 :::
 
