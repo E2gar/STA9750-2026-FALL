@@ -1,11 +1,12 @@
 ---
-title: "Mini-Project Placeholder"
+title: "Mini-Project #01: What We Watched: Exploring Netflix Viewing Data"
+author: "Edgar Rios"
+date: "2026-10-16"
+format: html
 ---
 
-This is a placeholder for STA9750 Mini-Project 1. Check back soon for more!
 
 ```{r}
-library(tidyverse)
 #' Acquire Netflix What We Watched Reports
 #' 
 #' This function will acquire and standardize all data for MP#01
@@ -27,6 +28,9 @@ load_netflix_data <- function(){
   library(rvest)
   library(readxl)
   library(fs)
+  library(skimr)
+  library(scales)
+  library(gt)
   
   data_dir <- path("data", "mp01")
     
@@ -99,7 +103,9 @@ NETFLIX_DATA <- load_netflix_data()
 
 ```{r}
 glimpse(NETFLIX_DATA)
+```
 
+```{r}
 #Task 2
 NETFLIX_DATA <- NETFLIX_DATA |>
   rename(
@@ -121,59 +127,289 @@ NETFLIX_DATA <- NETFLIX_DATA |>
     available_globally = available_globally == "Yes"
   )
   
-glimpse(NETFLIX_DATA)
-
 #Task 4 
 summary(NETFLIX_DATA)
 
-
-library(skimr)
+```{r}
 skim(NETFLIX_DATA)
-
-
-# Task 5
+```
 
 
 
-library(dplyr)
+1
+```{r}
 date_range <- NETFLIX_DATA |>
   summarise(
     earliest_date = min(period_start),
     latest_date = max(period_end)
   )
-
-date_range
 ```
 
 The Netflix dataset covers the period from `{r} date_range$earliest_date` to `{r} date_range$latest_date`.
 
-
+2
 ```{r}
-library(dplyr)
 title_count <- NETFLIX_DATA |>
   summarise(
     total_titles = n_distinct(title)
   )
-
-title_count
 ```
 
 
 The Netflix dataset contains `{r} title_count$total_titles` different shows and movies.
 
-
+3
 ```{r}
-library(dplyr)
 bridgerton_hours <- NETFLIX_DATA |>
   filter(str_detect(title, "Bridgerton")) |>
   summarise(
     total_hours = sum(hours_viewed, na.rm = TRUE)
   )
-
-bridgerton_hours
 ```
 
 The total number of hours spent watching shows from the Bridgerton universe is `{r} format(bridgerton_hours$total_hours, big.mark = ",", scientific = FALSE)` hours.
 
 
+```{r}
+stranger_things_hours <- NETFLIX_DATA |>
+  filter(str_detect(title, "Stranger Things")) |>
+  filter_out(str_detect(title, "Beyond Stranger Things")) |>
+  filter_out(str_detect(title, "Tales from")) |>
+  filter_out(str_detect(title, "Fireplace")) |>
+  summarise(
+    total_hours = sum(hours_viewed, na.rm = TRUE)
+  )
+```
 
+The total number of hours spent watching the five seasons of Stranger Things is `{r} format(stranger_things_hours$total_hours, big.mark = ",", scientific = FALSE)` hours.
+
+
+```{r}
+top10_hours <- NETFLIX_DATA |>
+  filter(period == "2026H1") |>
+  slice_max(hours_viewed, n = 10, with_ties = FALSE) |>
+  summarise(total = sum(hours_viewed))
+
+total_hours <- NETFLIX_DATA |>
+  filter(period == "2026H1") |>
+  summarise(total = sum(hours_viewed, na.rm = TRUE))
+
+top10_percentage <- (top10_hours$total / total_hours$total) * 100
+
+top10_percentage
+```
+
+The Top 10 titles of 2026H1 accounted for `{r} round(top10_percentage, 2)`% of the total watch time.
+
+```{r}
+global_availability <- NETFLIX_DATA |>
+  summarise(
+    total_titles = n_distinct(title),
+    global_titles = n_distinct(title[available_globally == TRUE]),
+    total_hours = sum(hours_viewed, na.rm = TRUE),
+    global_hours = sum(hours_viewed[available_globally == TRUE], na.rm = TRUE),
+    title_fraction = global_titles / total_titles,
+    hours_fraction = global_hours / total_hours
+  )
+
+global_availability
+```
+
+Approximately `{r} percent(global_availability$title_fraction, accuracy = 0.01)` of Netflix’s catalog is globally available by title, while `{r} percent(global_availability$hours_fraction, accuracy = 0.01)` of total watch time comes from globally available titles.
+
+```{r}
+top_titles <- NETFLIX_DATA |>
+  group_by(period) |>
+  mutate(
+    total_period_hours = sum(hours_viewed, na.rm = TRUE)
+  ) |>
+  slice_max(hours_viewed, n = 1, with_ties = FALSE) |>
+  mutate(
+    fraction = hours_viewed / total_period_hours
+  ) |>
+  select(period, title, hours_viewed, fraction) |>
+  ungroup()
+
+top_titles |>
+  gt() |>
+  tab_header(
+    title = "Most-Watched Netflix Title by Period",
+    subtitle = "Top title and its share of total viewing hours"
+  ) |>
+  cols_label(
+    period = "Period",
+    title = "Title",
+    hours_viewed = "Hours Viewed",
+    fraction = "Share of Total Viewership"
+  ) |>
+  fmt_number(
+    columns = hours_viewed,
+    decimals = 0
+  ) |>
+  fmt_percent(
+    columns = fraction,
+    decimals = 2
+  )
+
+```
+
+```{r}
+catalog_size <- NETFLIX_DATA |>
+  group_by(period) |>
+  summarise(
+    total_titles = n_distinct(title),
+    total_runtime = sum(runtime, na.rm = TRUE) / 60
+  ) |>
+  ungroup()
+
+catalog_size |>
+  gt() |>
+  tab_header(
+    title = "Netflix Catalog Size by Period",
+    subtitle = "Number of Titles and Total Runtime"
+  ) |>
+  cols_label(
+    period = "Period",
+    total_titles = "Number of Titles",
+    total_runtime = "Total Runtime (Hours)"
+  ) |>
+  fmt_number(
+    columns = c(total_titles, total_runtime),
+    decimals = 0
+  )
+```
+
+```{r}
+consistent_titles <- NETFLIX_DATA |>
+  group_by(title) |>
+  summarise(
+    periods = n_distinct(period),
+    avg_hours = mean(hours_viewed, na.rm = TRUE),
+    min_hours = min(hours_viewed, na.rm = TRUE),
+    sd_hours = sd(hours_viewed, na.rm = TRUE)
+  ) |>
+  filter(periods == 7) |>
+  mutate(
+    cv = sd_hours / avg_hours
+  ) |>
+  arrange(desc(min_hours)) |>
+  slice_head(n = 10) |>
+  select(title, avg_hours, min_hours, cv) |>
+  ungroup()
+
+consistent_titles |>
+  gt() |>
+  tab_header(
+    title = "Top 10 Netflix Titles with Consistently High Viewership Across All Periods",
+    subtitle = "Ranked by Minimum Hours Viewed"
+  ) |>
+  cols_label(
+    title = "Title",
+    avg_hours = "Average Hours Viewed",
+    min_hours = "Minimum Hours Viewed",
+    cv = "Viewership Variability"
+  ) |>
+  fmt_number(
+    columns = c(avg_hours, min_hours),
+    decimals = 0
+  ) |>
+  fmt_percent(
+    columns = cv,
+    decimals = 2
+  ) |>
+  tab_source_note(
+    "Note: Viewership variability is measured using the coefficient of variation (standard deviation divided by average viewing hours). Lower percentages indicate more consistent viewership."
+  )
+```
+
+```{r}
+show_movie <- NETFLIX_DATA |>
+  mutate(
+    content_type = if_else(
+      coalesce(runtime > 240, FALSE) |
+        str_detect(title, "Season"),
+      "TV Show",
+      "Movie"
+    )
+  ) |>
+  group_by(period, content_type) |>
+  summarise(
+    total_hours = sum(hours_viewed, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  group_by(period) |>
+  mutate(
+    percentage = total_hours / sum(total_hours)
+  ) |>
+  ungroup() |>
+  select(period, content_type, percentage) |>
+  pivot_wider(
+    names_from = content_type,
+    values_from = percentage
+  )
+
+show_movie |>
+  gt() |>
+  tab_header(
+    title = "Netflix Viewership: TV Shows vs. Movies",
+    subtitle = "Distribution of Viewing Hours Across Reporting Periods"
+  ) |>
+  cols_label(
+    period = "Period",
+    `TV Show` = "TV Shows",
+    Movie = "Movies"
+  ) |>
+  fmt_percent(
+    columns = c(`TV Show`, Movie),
+    decimals = 2
+  ) |>
+  tab_source_note(
+    "Note: Titles exceeding four hours or containing 'Season' are classified as TV shows."
+  )
+```
+
+```{r}
+live_comparison <- NETFLIX_DATA |>
+  mutate(
+    content_type = if_else(
+      live_event == TRUE,
+      "Live Events",
+      "Pre-Taped Content"
+    )
+  ) |>
+  group_by(content_type) |>
+  summarise(
+    total_titles = n(),
+    avg_views = mean(views, na.rm = TRUE),
+    top_tier_views = mean(
+      views[views >= quantile(views, 0.90, na.rm = TRUE)],
+      na.rm = TRUE
+    )
+  ) |>
+  ungroup()
+
+live_comparison |>
+  gt() |>
+  tab_header(
+    title = "Netflix Live Events vs. Pre-Taped Content",
+    subtitle = "Average Viewership and Top 10% Performance"
+  ) |>
+  cols_label(
+    content_type = "Content Type",
+    total_titles = "Number of Entries",
+    avg_views = "Average Views",
+    top_tier_views = "Top 10% Average Views"
+  ) |>
+  fmt_number(
+    columns = c(total_titles, avg_views, top_tier_views),
+    decimals = 0
+  ) |>
+  tab_source_note(
+    "Note: Top-tier content is defined as the top 10% by views within each category."
+  ) 
+```
+::: {.callout-note title="AI Usage Statement" collapse="true"}
+
+ChatGPT was used to help write the code in this project, but all non-code text was generated without the use of any Generative AI tools. Additionally, ChatGPT was used to provide additional background information on the topic and to brainstorm ideas for the final open-ended prompt.
+
+:::
