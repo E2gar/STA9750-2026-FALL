@@ -2,9 +2,24 @@
 title: "Mini-Project #01: What We Watched: Exploring Netflix Viewing Data"
 author: "Edgar Rios"
 date: "2026-10-16"
-format: html
+format:
+  html:
+    toc: true
+    toc-location: right
+    page-layout: article
 ---
 
+<div style="text-align: center; margin: 25px 0;">
+  <img
+    src="https://filmfervor.com/wp-content/uploads/2022/07/Netflix-logo-red-black-png.png"
+    alt="Netflix Logo"
+    style="width: 280px; max-width: 100%;"
+  >
+</div>
+
+## 1. Introduction
+
+This project analyzes Netflix's What We Watched reports from 2023H1 through 2026H1. The data is collected using the `load_netflix_data()` function, which downloads and combines the reports into a single dataset for analysis.
 
 ```{r}
 #' Acquire Netflix What We Watched Reports
@@ -100,13 +115,15 @@ load_netflix_data <- function(){
 
 NETFLIX_DATA <- load_netflix_data()
 ```
+## 2. Initial Data Exploration
+
+In this section, I explored the Netflix data set using `glimpse()` which showed that it contains 61,892 rows and 11 columns. I then, renamed several columns (`title`, `runtime`, `views`, `hours_viewed`, `release_date`, `available_globally`) so that I can have nice 'tidy' columns. Finally, I use `summary()` and `skim()` to examine descriptive statistics and identify any potential missing values before proceeding with the analysis. 
 
 ```{r}
 glimpse(NETFLIX_DATA)
 ```
 
 ```{r}
-#Task 2
 NETFLIX_DATA <- NETFLIX_DATA |>
   rename(
     title = Title,
@@ -118,25 +135,27 @@ NETFLIX_DATA <- NETFLIX_DATA |>
   ) 
   
 names(NETFLIX_DATA)
+```
 
-# Task 3 
-
+```{r}
 NETFLIX_DATA <- NETFLIX_DATA |>
   mutate(
     year = as.integer(year),
     available_globally = available_globally == "Yes"
   )
-  
-#Task 4 
+```
+
+```{r}
 summary(NETFLIX_DATA)
+```
 
 ```{r}
 skim(NETFLIX_DATA)
 ```
 
 
-
-1
+## 3. Exploratory Questions - Inline Values
+1.
 ```{r}
 date_range <- NETFLIX_DATA |>
   summarise(
@@ -147,7 +166,7 @@ date_range <- NETFLIX_DATA |>
 
 The Netflix dataset covers the period from `{r} date_range$earliest_date` to `{r} date_range$latest_date`.
 
-2
+2.
 ```{r}
 title_count <- NETFLIX_DATA |>
   summarise(
@@ -158,7 +177,7 @@ title_count <- NETFLIX_DATA |>
 
 The Netflix dataset contains `{r} title_count$total_titles` different shows and movies.
 
-3
+3.
 ```{r}
 bridgerton_hours <- NETFLIX_DATA |>
   filter(str_detect(title, "Bridgerton")) |>
@@ -169,7 +188,7 @@ bridgerton_hours <- NETFLIX_DATA |>
 
 The total number of hours spent watching shows from the Bridgerton universe is `{r} format(bridgerton_hours$total_hours, big.mark = ",", scientific = FALSE)` hours.
 
-
+4.
 ```{r}
 stranger_things_hours <- NETFLIX_DATA |>
   filter(str_detect(title, "Stranger Things")) |>
@@ -183,7 +202,7 @@ stranger_things_hours <- NETFLIX_DATA |>
 
 The total number of hours spent watching the five seasons of Stranger Things is `{r} format(stranger_things_hours$total_hours, big.mark = ",", scientific = FALSE)` hours.
 
-
+5.
 ```{r}
 top10_hours <- NETFLIX_DATA |>
   filter(period == "2026H1") |>
@@ -195,12 +214,11 @@ total_hours <- NETFLIX_DATA |>
   summarise(total = sum(hours_viewed, na.rm = TRUE))
 
 top10_percentage <- (top10_hours$total / total_hours$total) * 100
-
-top10_percentage
 ```
 
 The Top 10 titles of 2026H1 accounted for `{r} round(top10_percentage, 2)`% of the total watch time.
 
+6.
 ```{r}
 global_availability <- NETFLIX_DATA |>
   summarise(
@@ -211,11 +229,11 @@ global_availability <- NETFLIX_DATA |>
     title_fraction = global_titles / total_titles,
     hours_fraction = global_hours / total_hours
   )
-
-global_availability
 ```
 
 Approximately `{r} percent(global_availability$title_fraction, accuracy = 0.01)` of Netflix’s catalog is globally available by title, while `{r} percent(global_availability$hours_fraction, accuracy = 0.01)` of total watch time comes from globally available titles.
+
+## 4. Exploratory Questions - Table Answers
 
 ```{r}
 top_titles <- NETFLIX_DATA |>
@@ -250,8 +268,10 @@ top_titles |>
     columns = fraction,
     decimals = 2
   )
-
 ```
+
+The table shows the most-watched Netflix title by period and its percentage of total viewing hours. Wednesday: Season 2 had the highest viewing hours among the titles listed, with 964.1 million hours in 2025H2, accounting for 1.35% of total viewing hours. Overall, the results show that even the most-watched title in each period accounts for a relatively small percentage of Netflix's total viewership.
+
 
 ```{r}
 catalog_size <- NETFLIX_DATA |>
@@ -266,7 +286,6 @@ catalog_size |>
   gt() |>
   tab_header(
     title = "Netflix Catalog Size by Period",
-    subtitle = "Number of Titles and Total Runtime"
   ) |>
   cols_label(
     period = "Period",
@@ -278,6 +297,8 @@ catalog_size |>
     decimals = 0
   )
 ```
+
+The table shows Netflix's catalog size by period. It shows that the total run time has consistently increased from 2023H1 to 2026H1. Although the number of titles significantly decreased from 18,126 in 2023 H1 to 6,574 in 2023H2, it has gradually increased from period to period since then. 
 
 ```{r}
 consistent_titles <- NETFLIX_DATA |>
@@ -321,6 +342,10 @@ consistent_titles |>
     "Note: Viewership variability is measured using the coefficient of variation (standard deviation divided by average viewing hours). Lower percentages indicate more consistent viewership."
   )
 ```
+
+The table shows the top 10 Netflix titles with the consistently high viewership, with Stranger Things 4 being the only Netflix original among them. The shows are ranked by their minimum hours viewed, with Pablo Escobar, el patrón del mal: Season 1 ranking first. Although Stranger Things 4 has the highest average hours viewed, its viewing hours are less consistent over time as indicated by its viewership variability of 82.78%.
+
+
 
 ```{r}
 show_movie <- NETFLIX_DATA |>
@@ -368,11 +393,19 @@ show_movie |>
   )
 ```
 
+The table shows the percentage of viewing hours spent on TV shows vs. movies. TV shows account for majority of the viewing hours than movies, and it's because TV shows usually are longer and generated more viewing hours than movies. 
+
 ```{r}
 live_comparison <- NETFLIX_DATA |>
+  group_by(title) |>
+  summarise(
+    total_views = sum(views, na.rm = TRUE),
+    live = any(live_event, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
   mutate(
     content_type = if_else(
-      live_event == TRUE,
+      live,
       "Live Events",
       "Pre-Taped Content"
     )
@@ -380,36 +413,61 @@ live_comparison <- NETFLIX_DATA |>
   group_by(content_type) |>
   summarise(
     total_titles = n(),
-    avg_views = mean(views, na.rm = TRUE),
-    top_tier_views = mean(
-      views[views >= quantile(views, 0.90, na.rm = TRUE)],
+    avg_views = mean(total_views, na.rm = TRUE),
+    top_10_views = mean(
+      head(sort(total_views, decreasing = TRUE), 10),
       na.rm = TRUE
-    )
-  ) |>
-  ungroup()
+    ),
+    .groups = "drop"
+  )
 
 live_comparison |>
   gt() |>
   tab_header(
     title = "Netflix Live Events vs. Pre-Taped Content",
-    subtitle = "Average Viewership and Top 10% Performance"
+    subtitle = "Average Viewership and Top 10 Performance"
   ) |>
   cols_label(
     content_type = "Content Type",
-    total_titles = "Number of Entries",
+    total_titles = "Number of Titles",
     avg_views = "Average Views",
-    top_tier_views = "Top 10% Average Views"
+    top_10_views = "Top 10 Average Views"
   ) |>
   fmt_number(
-    columns = c(total_titles, avg_views, top_tier_views),
-    decimals = 0
-  ) |>
-  tab_source_note(
-    "Note: Top-tier content is defined as the top 10% by views within each category."
-  ) 
+    columns = c(total_titles, avg_views, top_10_views),
+    decimals = 0,
+    use_seps = TRUE
+  )
 ```
+The table compares the viewing performance of live events and pre-taped content. Based on the results, pre-taped content receives more average views than live events. When comparing top tier pre-taped content with top-tier live events, pre-taped content significantly outperforms as shown. One explanation can be that it's more likely for a viewer to return on pre-taped content over time than a live event.
+
+
+## 5. Corporate Strategy Memo
+
+**To:** Netflix Leadership
+
+**From:** Edgar Rios
+
+**Date:** October 16, 2026
+
+**Subject:** Strategic Recommendations for Netflix Original Content in 2027 & Beyond
+
+According to Netflix's What We Watched reports from 2023H1 through 2026H1, I identified several viewership trends that can help inform Netflix's original content strategy for 2027 and beyond. The three important key areas I focused on are: globally available vs. non-globally available content, TV shows vs. movies and the consistently popular titles vs. titles with fluctuating viewership. 
+
+Firstly, based on my findings, globally available content accounts for 51.92% of total viewing hours despite representing only 24.61% of distinct titles.To prioritize globally available content, Netflix should focus on expanding its international reach. Netflix's What We Watched reports included 24,427 distinct titles, of which 6,010 were globally available. By investing in globally accessible original productions, Netflix can gain greater control over its content availability and potentially attract a wider audience that can strengthen their overall viewership. While maintaining engagement with its current audiences, Netflix can continue to expand their content catalog and support a long term audience engagement. Furthermore, global availability does not necessarily mean a title is a Netflix original, so Netflix should consider both international distribution opportunities and audience preferences when making future content investments.
+
+Beyond expanding its international reach, Netflix should consider which types of content generate the most viewership: TV shows or movies. Television shows accounted for 69.17% of viewing hours in 2023H1, increasing to 95.78% in 2023H2. From 2024H1 through 2026H1, their share remained ranging from 94.75% to 96.46%, compared to movies, which ranged from 3.54% to 5.25%.
+
+These findings suggest that television shows account for the majority of Netflix's viewing hours. For example, among the titles that maintained consistently high viewership ranked by minimum hours viewed across all reporting periods (2023H1 through 2026H1), Pablo Escobar, el patrón del mal: Season 1 ranked first, with a minimum of 105.5 million viewing hours. Chiquititas (2013) ranked second, followed by Stranger Things 4, which ranked third with a minimum of 97.1 million viewing hours. All three titles are television series and are not movies. Other series, including Suits, Breaking Bad, and Money Heist, also appeared among the top consistently popular titles. It should be noted that a season of a show typically has a longer runtime, therefore longer viewing hours which explains its larger share of Netflix's overall viewership, in comparison to movies.
+However, most of the consistently popular titles on the list are licensed productions and not Netflix originals. Stranger Things 4 is the only one on the list that is a Netflix-produced exclusive. Netflix should focus on developing original television series that can be capable of achieving a similar long-term viewership while reducing its reliance on licensed content.
+
+Furthermore, when examining the viewership variability, Stranger Things 4 had a coefficient of variation of 82.78%, suggesting significant fluctuations in its viewership even though it has maintained very high hours viewed. On the other hand, Breaking Bad: Season 2 had a coefficient of variation of 13.07%, indicating relatively stable viewing hours. High viewership and stable viewership are not necessarily the same thing, which is why Netflix should consider both factors when evaluating the long-term audience reception, engagement, and success of its original productions.
+
+In conclusion, I recommend that Netflix prioritize developing globally accessible original television series that can attract substantial viewing hours and maintain audience engagement over time. While licensed content continues to contribute greatly to Netflix's viewership, investing in original productions that produce long-term appeal, can ultimately strengthen and grow the platform’s content catalog and audience retention.
+
 ::: {.callout-note title="AI Usage Statement" collapse="true"}
 
-ChatGPT was used to help write the code in this project, but all non-code text was generated without the use of any Generative AI tools. Additionally, ChatGPT was used to provide additional background information on the topic and to brainstorm ideas for the final open-ended prompt.
+ChatGPT was used to assist with R code, including table formatting and website design throughout this project. All non-code text was originally written by me. Additionally, ChatGPT was used to provide additional background information on the topic and to brainstorm ideas for the final open-ended prompt.
 
 :::
+
