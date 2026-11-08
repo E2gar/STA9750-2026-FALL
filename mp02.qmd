@@ -799,7 +799,7 @@ ggplot(best_five, aes(
   theme_minimal()
 
 ```
-The City of Seattle, Washington, receives the Best Environmental Performance Award for having the lowest estimated CO₂ emissions per passenger mile among all eligible transit agencies regardless of size, at approximately 0.064 pounds. This award recognizes the agency with the lowest estimated emissions relative to the total distance traveled by its passengers. The City of Seattle ranked ahead of other leading agencies, including the Tri-County Metropolitan Transportation District of Oregon and the California Vanpool Authority. The City of Seattle's emissions were significantly below the median of 1.095 pounds of CO₂ per passenger mile across all eligible transit agencies, highlighting its strong environmental performance.
+The City of Seattle, Washington, receives the Best Environmental Performance Award for having the lowest estimated CO₂ emissions per passenger mile among all transit agencies regardless of size, at approximately 0.064 pounds. This award recognizes the agency with the lowest estimated emissions relative to the total distance traveled by its passengers. The City of Seattle ranked ahead of other leading agencies, including the Tri-County Metropolitan Transportation District of Oregon and the California Vanpool Authority. The City of Seattle's emissions were significantly below the median of 1.095 pounds of CO₂ per passenger mile across all transit agencies, showing its strong environmental performance.
 
 
 ### Worst Environmental Performance Award
@@ -851,7 +851,7 @@ ggplot(worst_five, aes(
   )
 
 ```
-The Northeast Illinois Regional Commuter Railroad Corporation receives the Worst Environmental Performance Award for having the highest estimated CO₂ emissions per passenger trip among large transit agencies, at approximately 16.572 pounds. This award recognizes the large transit agency with the highest estimated emissions relative to its total number of passenger trips. The Northeast Illinois Regional Commuter Railroad Corporation emissions are significantly higher than the other large agencies, producing 2.83 times more CO₂ per passenger trip than second-place Bi-State Development Agency, which recorded 5.859 pounds. Furthermore, its emissions were significantly above the median of 3.192 pounds of CO₂ per passenger trip among the large transit agencies, which shows its poor environmental performance.
+The Northeast Illinois Regional Commuter Railroad Corporation receives the Worst Environmental Performance Award for having the highest estimated CO₂ emissions per passenger trip among large transit agencies, at approximately 16.572 pounds. This award identifies the large transit agency with the highest estimated emissions relative to its total number of passenger trips. The Northeast Illinois Regional Commuter Railroad Corporation's emissions are significantly higher than those of other large agencies, producing 2.83 times more CO₂ per passenger trip than second-place Bi-State Development Agency, which recorded 5.859 pounds. Furthermore, its emissions were significantly above the median of 3.192 pounds of CO₂ per passenger trip among the large transit agencies, which shows its poor environmental performance.
 
 ::: {.callout-note title="AI Usage Statement" collapse="true"}
 
