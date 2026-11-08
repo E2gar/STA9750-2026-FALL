@@ -769,7 +769,7 @@ agency_emissions |>
 
 The Green Transit Alliance (GTA) is pleased to announce the winners of its 2025 Environmental Performance Awards, recognizing public transit agencies across the United States based on their estimated carbon dioxide CO₂ emissions and passenger usage. Using data from the 2025 National Transit Database (NTD) and the Energy Information Administration (EIA), the GTA evaluated transit agencies based on their estimated emissions per passenger mile and per passenger trip. Two awards were established to recognize the best and worst environmental performers.
 
-### Best Environmental Performance Award
+### Best Environmental "Greenest" Agency Performance Award
 ```{r}
 #| echo: true
 #| code-fold: true
@@ -799,7 +799,7 @@ ggplot(best_five, aes(
   theme_minimal()
 
 ```
-The City of Seattle, Washington, receives the Best Environmental Performance Award for having the lowest estimated CO₂ emissions per passenger mile among all transit agencies regardless of size, at approximately 0.064 pounds. This award recognizes the agency with the lowest estimated emissions relative to the total distance traveled by its passengers. The City of Seattle ranked ahead of other leading agencies, including the Tri-County Metropolitan Transportation District of Oregon and the California Vanpool Authority. The City of Seattle's emissions were significantly below the median of 1.095 pounds of CO₂ per passenger mile across all transit agencies, showing its strong environmental performance.
+The City of Seattle, Washington, receives the Best Environmental "Greenest" Agency Performance Award for having the lowest estimated CO₂ emissions per passenger mile among all transit agencies regardless of size, at approximately 0.064 pounds. This award recognizes the agency with the lowest estimated emissions relative to the total distance traveled by its passengers. The City of Seattle ranked ahead of other leading agencies, including the Tri-County Metropolitan Transportation District of Oregon and the California Vanpool Authority. The City of Seattle's emissions were significantly below the median of 1.095 pounds of CO₂ per passenger mile across all transit agencies, showing its strong environmental performance.
 
 
 ### Worst Environmental Performance Award
