@@ -799,7 +799,7 @@ ggplot(best_five, aes(
   theme_minimal()
 
 ```
-The City of Seattle, Washington, receives the Best Environmental Performance Award for having the lowest estimated CO₂ emissions per passenger mile among all eligible transit agencies regardless of size, at approximately 0.064 pounds. This award recognizes the agency with the lowest estimated emissions relative to the total distance traveled by its passengers. The City of Seattle ranked ahead of other leading agencies, including the Tri-County Metropolitan Transportation District of Oregon and the California Vanpool Authority. The City of Seattle's emissions was significantly below the median of 1.095 pounds of CO₂ per passenger mile across all eligible transit agencies, highlighting its strong environmental performance.
+The City of Seattle, Washington, receives the Best Environmental Performance Award for having the lowest estimated CO₂ emissions per passenger mile among all eligible transit agencies regardless of size, at approximately 0.064 pounds. This award recognizes the agency with the lowest estimated emissions relative to the total distance traveled by its passengers. The City of Seattle ranked ahead of other leading agencies, including the Tri-County Metropolitan Transportation District of Oregon and the California Vanpool Authority. The City of Seattle's emissions were significantly below the median of 1.095 pounds of CO₂ per passenger mile across all eligible transit agencies, highlighting its strong environmental performance.
 
 
 ### Worst Environmental Performance Award
